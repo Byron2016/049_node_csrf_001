@@ -1,0 +1,6 @@
+{
+  "**/*": [
+    "pnpm run format:write",
+    "pnpm run lint"
+  ]
+}

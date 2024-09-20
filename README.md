@@ -60,3 +60,174 @@ We are going to use
 [⏪(Back to top)](#table-of-contents)
 
 # Steps
+
+- Initial steps root level
+
+  - Add package.json file
+
+    ```bash
+      pnpm init
+    ```
+
+  - Add .gitignore file
+
+    ```bash
+      touch .gitignore
+      node --eval "fs.writeFileSync('.gitignore', 'node_modules\n')"
+    ```
+
+  - Add Prettier
+
+    - Add prettier dev dependency
+
+      ```bash
+        pnpm i -D -E prettier
+      ```
+
+    - Add .prettierignore file
+
+      ```bash
+        touch .prettierignore
+        echo "coverage
+        public
+        dist
+        pnpm-workspace.yaml
+        pnpm-lock.yaml
+        .vscode
+        .prettierrc
+        .lintstagedrc
+        package.json
+        README.md" > .prettierignore
+      ```
+
+    - Add .prettierrc file
+
+      ```bash
+        touch .prettierrc
+        echo "{
+        \"semi\": true,
+        \"singleQuote\": true
+        }" > .prettierrc
+      ```
+
+    - Add package.json scrpts
+
+      ```bash
+        npm pkg set scripts.format="prettier . --check"
+        npm pkg set scripts.format:write="prettier .  --write"
+      ```
+
+    - Add .vscode
+
+      - Add and configure .vscode settings.json
+
+        ```bash
+          mkdir .vscode
+          cd .vscode
+          touch settings.json
+          echo "{
+          \"editor.formatOnSave\": true,
+          \"editor.defaultFormatter\": \"esbenp.prettier-vscode\"
+          }" > settings.json
+          cd ..
+        ```
+
+      - Add esben.prettier-vscode extension to VSCode.
+
+  - Add .editorconfig file
+
+    ```bash
+      touch .editorconfig
+      echo "root = true
+          
+      [*]
+      indent_style = space
+      indent_size = 2
+      end_of_line = lf
+      charset = utf-8
+      trim_trailing_whitespace = true
+      insert_final_newline = true
+      
+      [*.md]
+      trim_trailing_whitespace = false" > .editorconfig
+    ```
+
+  - ESLint
+
+    - Add ESLint dev dependency
+
+      ```bash
+        pnpm create @eslint/config@latest
+
+        # How would you like to use ESLint?           · To check syntax and find problems
+        # What type of modules does your project use? · JavaScript modules (import/export)
+        # Which framework does your project use?      · None of these
+        # Does your project use TypeScript?           · No
+        # Where does your code run?                   · all
+        # The config that you have selected requires the following dependencies:
+        #  --> eslint, globals, @eslint/js
+        # Would you like to install them now?         ·  Yes
+        # Which package manager do you want to use?   · pnpm
+      ```
+
+    - Add eslint-config-prettier to aboit prettier and ESLint confligs
+
+      ```bash
+        pnpm i -D eslint-config-prettier
+      ```
+
+      ```javascript
+        ....
+        import eslintConfigPrettier from 'eslint-config-prettier';
+
+        export default [
+          ....
+          eslintConfigPrettier,
+        ];
+      ```
+
+    - Add package.json scrpts
+
+      ```bash
+        npm pkg set scripts.lint:nofix="eslint ."
+        npm pkg set scripts.lint="eslint . --fix"
+        npm pkg set scripts.lint:inspect:write="eslint --inspect-config"
+      ```
+
+  - Install husky and lint-staged
+
+    - Add husky and lint-staged dev dependency
+
+      ```bash
+        pnpm add -D husky lint-staged
+      ```
+
+    - Init husky and add pre-commit script
+
+      ```bash
+        npx husky init
+        node --eval "fs.writeFileSync('.husky/pre-commit','pnpm exec lint-staged\n')"
+      ```
+
+    - Update package.json or add .lintstagedrc
+
+      ```json
+        {
+          ....
+          "lint-staged": {
+            "**/*.{js,ts,tsx}": [
+              "eslint --fix"
+            ],
+            "**/*": "prettier --write   --ignore-unknown"
+          }
+        }
+      ```
+      
+      ```json
+        {
+          "**/*": [
+            "pnpm run format:write",
+            "pnpm run lint"
+          ]
+        }
+      ```

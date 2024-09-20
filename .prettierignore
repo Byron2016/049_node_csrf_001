@@ -1,0 +1,10 @@
+coverage
+public
+dist
+pnpm-workspace.yaml
+pnpm-lock.yaml
+.vscode
+.prettierrc
+.lintstagedrc
+package.json
+README.md
