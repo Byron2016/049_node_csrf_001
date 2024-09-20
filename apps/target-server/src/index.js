@@ -1,5 +1,5 @@
 import express from 'express';
-import * as fs from 'node:fs';
+//import * as fs from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -31,8 +31,8 @@ app.set('view engine', '.hbs');
 app.use(express.urlencoded({ extended: true })); // mirar T_express.md
 
 // Db
-const users = JSON.parse(fs.readFileSync(join(__dirname, 'db.json')));
-console.log(users);
+// const users = JSON.parse(fs.readFileSync(join(__dirname, 'db.json')));
+// console.log(users);
 
 // Routes
 app.use(indexRoutes);

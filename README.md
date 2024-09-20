@@ -286,6 +286,166 @@ We are going to use
 
         pnpm i -D nodemon
       ```
+    - Add package.json scrpts
 
+      ```bash
+        # cd apps/target-server 
+        npm pkg set scripts.start="node src/index.js"
+        npm pkg set scripts.dev="nodemon src/index.js"
+      ```
 
+  - Add Views
+
+    - Create a folder/files structure 
   
+      ```bash
+        # cd apps/target-server
+        mkdir views && cd views && mkdir layouts && cd layouts && touch main.hbs && cd .. && touch login.hbs
+        cd ..
+      ```
+    - In layouts/main.hbs file 
+  
+      ```html
+        <html lang='en'>
+          <head>
+            <meta charset='UTF-8' />
+            <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+            <title>CSRF</title>
+          </head>
+          <body>
+            {{{body}}}
+          </body>
+        </html>
+      ```
+
+    - In views/login.hbs file 
+  
+      ```html
+        <form action='/login' method='post'>
+          <input type='email' name='email' placeholder='Email' value='test@test.com' />
+          <input type='password' name='password' placeholder='Password' value='1234' />
+          <input type='submit' />
+        </form>
+      ```
+  - Add db simulation file "src/db.json"
+    
+    ```json
+      [
+        {
+          "id": 1,
+          "name": "Test",
+          "email": "test@test.com",
+          "password": "1234"
+        }
+      ]
+    ```
+
+  - Add Controllers
+
+    - Create a folder/files structure 
+  
+      ```bash
+        # cd apps/target-server
+        mkdir controllers &&  touch login.controllers.js
+      ```
+    - In login.controllers.js file 
+  
+      ```javascript
+        import * as fs from 'node:fs';
+        import { dirname, join } from 'node:path';
+        import { fileURLToPath } from 'node:url';
+        const __dirname = dirname(fileURLToPath(import.meta.url));
+        // Db
+        const users = JSON.parse(fs.readFileSync(join(__dirname, '..', 'db.json')));
+        console.log(users);
+        export const renderLoginForm = (req, res) => {
+          res.render('login');
+        };
+        export const processLoginForm = (req, res) => {
+          if (!req.body.email || !req.body.password) {
+            return res.status(400).send('All fields are requiered');
+          }
+          const user = users.find((user) => user.email === req.body.email);
+          if (!user || user.password !== req.body.password) {
+            return res.status(400).send('Invalid Credentials');
+          }
+          res.send('ok');
+        };
+      ```
+
+  - Add Routes
+
+    - Create a folder/files structure 
+  
+      ```bash
+        # cd apps/target-server
+        mkdir routes && touch index.routes.js && touch login.routes.js
+      ```
+
+    - In index.routes.js file 
+  
+      ```javascript
+        import { Router } from 'express';
+        const router = Router();
+        // Routes
+        router.get('/home', (req, res) => {
+          res.send('home');
+        });
+        export default router;
+      ```
+
+    - In login.routes.js file  
+  
+      ```javascript
+        import { Router } from 'express';
+        import {
+          renderLoginForm,
+          processLoginForm,
+        } from '../controllers/login.controllers.js';
+        const router = Router();
+        // Routes
+        router.get('/login', renderLoginForm);
+        router.post('/login', processLoginForm);
+        export default router;
+      ```
+  - Add index.js file "src/index.js"
+    
+    ```javascript
+      import express from 'express';
+      import { dirname, join } from 'node:path';
+      import { fileURLToPath } from 'node:url';
+
+      import handlebars from 'express-handlebars';
+
+      import indexRoutes from './routes/index.routes.js';
+      import loginRoutes from './routes/login.routes.js';
+
+      // Initializations
+      const app = express();
+      const PORT = process.env.PORT || 3333;
+      const __dirname = dirname(fileURLToPath(import.meta.url));
+
+      // settings
+      app.set('port', PORT);
+      app.set('views', join(__dirname, 'views'));
+
+      // config view engine
+      const hbs = handlebars.create({
+        defaultLayout: 'main',
+        layoutsDir: join(app.get('views'), 'layouts'),
+        partialsDir: join(app.get('views'), 'partials'),
+        extname: '.hbs',
+      });
+      app.engine('.hbs', hbs.engine);
+      app.set('view engine', '.hbs');
+
+      // Middlewares
+      app.use(express.urlencoded({ extended: true })); // mirar T_express.md
+
+      // Routes
+      app.use(indexRoutes);
+      app.use(loginRoutes);
+
+      // Server
+      app.listen(app.get('port'), () => console.log(`Listen on port ${PORT}`));
+    ```

@@ -1,15 +1,15 @@
 import { Router } from 'express';
 
+import {
+  renderLoginForm,
+  processLoginForm,
+} from '../controllers/login.controllers.js';
+
 const router = Router();
 
 // Routes
-router.get('/login', (req, res) => {
-  res.render('login');
-});
+router.get('/login', renderLoginForm);
 
-router.post('/login', (req, res) => {
-  console.log(req.body);
-  res.send(req.body);
-});
+router.post('/login', processLoginForm);
 
 export default router;
