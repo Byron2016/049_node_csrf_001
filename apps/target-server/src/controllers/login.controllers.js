@@ -25,3 +25,14 @@ export const processLoginForm = (req, res) => {
   console.log(req.session);
   res.redirect('/home');
 };
+
+export const loginEditForm = (req, res) => {
+  res.render('edit');
+};
+
+export const processLoginEditForm = (req, res) => {
+  const user = users.find((user) => user.id === req.session.userId);
+  user.email = req.body.email;
+  console.log(`User ${user.id} email changed to ${user.email}`);
+  res.send('Email changed');
+};

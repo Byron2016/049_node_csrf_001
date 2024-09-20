@@ -530,3 +530,56 @@ We are going to use
           };
           
         ```
+    
+    - Add a email edit 
+
+      - Create a folder/files structure 
+  
+        ```bash
+          # cd apps/target-server/views
+          touch edit.hbs 
+        ```
+
+      - In edit.hbs file 
+  
+        ```html
+          <form action='/login/edit' method='post'>
+            <input
+              type='email'
+              name='email'
+              placeholder='New Email'
+              value='testNew@test.com'
+            />
+            <input type='submit' />
+          </form>
+        ```
+
+      - In src/routes/login.controller.js file 
+  
+        ```javascript
+          ....
+          export const loginEditForm = (req, res) => {
+            res.render('edit');
+          };
+
+          export const processLoginEditForm = (req, res) => {
+            const user = users.find((user) => user.id === req.session.userId);
+            user.email = req.body.email;
+            console.log(`User ${user.id} email changed to ${user.email}`);
+            res.send('Email changed');
+          };
+        ```
+
+      - In src/routes/login.routes.js file 
+  
+        ```javascript
+          import {
+            renderLoginForm,
+            processLoginForm,
+            loginEditForm,
+            processLoginEditForm,
+          } from '../controllers/login.controllers.js';
+          ....
+          router.get('/login/edit', loginEditForm);
+          router.post('/login/edit', processLoginEditForm);
+        ```
