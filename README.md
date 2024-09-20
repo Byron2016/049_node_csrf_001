@@ -486,3 +486,47 @@ We are going to use
           - Exist a **Set-Cookie** entry with a **session-id**
         - Request Headers
           - If you go to "home", it is going to exist a cookie referense that is send in each request from browser to server.
+    
+    - Add a middleware 
+
+      - Create a folder/files structure 
+  
+        ```bash
+          # cd apps/target-server
+          mkdir middelware && touch login.middleware.js 
+        ```
+
+      - In login.middleware.js file 
+  
+        ```javascript
+          export const login = (req, res, next) => {
+            if (!req.session.userId) {
+              res.redirect('/login');
+            } else {
+              next();
+            }
+          };
+        ```
+
+      - In src/routes/index.routes.js file 
+  
+        ```javascript
+          import { login } from '../middleware/login.middleware.js';
+          router.get('/home', login, (req, res) => {
+            res.send(
+              `home page, must be logged in to access! (userId: ${req.session.userId})`,
+            );
+          });
+
+          export default router;
+        ```
+
+      - In src/routes/login.controller.js file 
+  
+        ```javascript
+          export const processLoginForm = (req, res) => {
+            ....
+            res.redirect('/home');
+          };
+          
+        ```

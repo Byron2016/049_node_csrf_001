@@ -23,5 +23,5 @@ export const processLoginForm = (req, res) => {
   req.session.test = 'hola';
   req.session.userId = user.id;
   console.log(req.session);
-  res.send('ok');
+  res.redirect('/home');
 };
