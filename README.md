@@ -231,3 +231,61 @@ We are going to use
           ]
         }
       ```
+
+  - Worksapaces
+
+    - Add workspaces definition file
+
+      ```bash
+        touch pnpm-workspace.yaml
+        echo "packages:
+        - 'apps/*'
+        - 'libs/*'" > pnpm-workspace.yaml
+      ```
+
+    - Add apps and libs folders
+
+      ```bash
+        mkdir apps 
+      ```
+
+- Target-server
+
+  - Initial steps
+
+    - Create a folder named "target-server"
+
+      ```bash
+        cd apps && mkdir target-server && cd target-server
+      ```
+
+    - Add package.json file
+
+      ```bash
+        cd apps/target-server && pnpm init
+      ```
+
+    - Add .gitignore file
+
+      ```bash
+        # cd apps/target-server
+        touch .gitignore
+        node --eval "fs.writeFileSync('.gitignore', 'node_modules\n')"
+      ```
+
+    - Add dev dependencies
+
+      ```bash
+        # cd apps/target-server 
+        pnpm i express express-session connect-flash-plus express-handlebars
+
+        # express: server library that we use
+        # express-session: CRSF works because how sessions works
+        # connect-flash-plus: to flash some messages 
+        # express-handlebars: to render html
+
+        pnpm i -D nodemon
+      ```
+
+
+  
