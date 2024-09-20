@@ -20,5 +20,8 @@ export const processLoginForm = (req, res) => {
   if (!user || user.password !== req.body.password) {
     return res.status(400).send('Invalid Credentials');
   }
+  req.session.test = 'hola';
+  req.session.userId = user.id;
+  console.log(req.session);
   res.send('ok');
 };

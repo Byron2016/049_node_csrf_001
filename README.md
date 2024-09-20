@@ -408,6 +408,7 @@ We are going to use
         router.post('/login', processLoginForm);
         export default router;
       ```
+
   - Add index.js file "src/index.js"
     
     ```javascript
@@ -449,3 +450,39 @@ We are going to use
       // Server
       app.listen(app.get('port'), () => console.log(`Listen on port ${PORT}`));
     ```
+
+  - Add Session 
+    
+    - In src/index.js
+  
+      ```javascript
+        import session from 'express-session';
+        ....
+        app.use(
+          session({
+            secret: 'test',
+            resave: false,
+            saveUninitialized: false,
+          }),
+        );
+      ```
+    
+    - In src/controllers/login.controllers.js
+  
+      ```javascript
+        export const processLoginForm = (req, res) => {
+          ....
+          req.session.test = 'hi';
+          req.session.userId = user.id;
+          console.log(req.session);
+          res.send('ok');
+        };
+      ```
+    - Understanding 
+      - Application/Storage/Cookie 
+        - It is created a cookie linked to port.
+      - Network/login/Headers
+        - Response Headers
+          - Exist a **Set-Cookie** entry with a **session-id**
+        - Request Headers
+          - If you go to "home", it is going to exist a cookie referense that is send in each request from browser to server.

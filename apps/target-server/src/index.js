@@ -1,5 +1,5 @@
 import express from 'express';
-//import * as fs from 'node:fs';
+import session from 'express-session';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,6 +29,13 @@ app.set('view engine', '.hbs');
 
 // Middlewares
 app.use(express.urlencoded({ extended: true })); // mirar T_express.md
+app.use(
+  session({
+    secret: 'test',
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 
 // Db
 // const users = JSON.parse(fs.readFileSync(join(__dirname, 'db.json')));
