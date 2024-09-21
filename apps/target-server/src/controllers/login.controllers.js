@@ -26,6 +26,12 @@ export const processLoginForm = (req, res) => {
   res.redirect('/home');
 };
 
+export const processLogOut = (req, res) => {
+  req.session.destroy();
+  //res.send('Logged out');
+  res.redirect('/');
+};
+
 export const loginEditForm = (req, res) => {
   res.render('edit');
 };

@@ -5,6 +5,7 @@ import {
   processLoginForm,
   loginEditForm,
   processLoginEditForm,
+  processLogOut,
 } from '../controllers/login.controllers.js';
 
 const router = Router();
@@ -13,6 +14,8 @@ const router = Router();
 router.get('/login', renderLoginForm);
 
 router.post('/login', processLoginForm);
+
+router.get('/login/logout', processLogOut);
 
 router.get('/login/edit', loginEditForm);
 

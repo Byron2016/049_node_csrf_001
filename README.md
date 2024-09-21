@@ -655,3 +655,91 @@ We are going to use
         - Run targer-server: [attack-server](http://localhost:5555)
         - This is going to automaticaly call form post and change your password.
 
+    - Test 
+
+      - Views 
+      
+        - home view  apps/target-server/src/views/home.hbs file
+
+          ```html
+            <h1>
+              home page, must be logged in to access! (userId:
+              {{userId}})
+            </h1>
+            <form action='/login/logout' method='get'>
+              <input type='submit' value='Log out' />
+            </form>
+          ```
+      
+        - welcome view  apps/target-server/src/views/welcome.hbs file
+
+          ```html
+            <h1>
+              Bienvenido
+            </h1>
+
+            <div>
+              {{#if logout}}
+                <form action='/login/logout' method='get'>
+                  <input type='submit' value='Log out' />
+                </form>
+              {{/if}}
+
+              {{#if login}}
+                <form action='/login' method='get'>
+                  <input type='submit' value='Log in' />
+                </form>
+              {{/if}}
+            </div>
+          ```
+      - Controller
+      
+        - login view  apps/target-server/src/controllers/login.controllers.js file
+
+          ```javascript
+            // add this function
+            export const processLogOut = (req, res) => {
+              req.session.destroy();
+              //res.send('Logged out');
+              res.redirect('/');
+            };
+          ```
+      
+      - Routes
+      
+        - index view  apps/target-server/src/routes/index.routes.js file
+
+          ```javascript
+            // add this route
+            router.get('/', (req, res) => {
+              const logout = req.session.userId ? true : false;
+              res.render('welcome', { login: !logout, logout });
+            });
+            // update this route
+            router.get('/home', login, (req, res) => {
+              res.render('home', { userId: req.session.userId });
+            });
+            ....
+          ```
+        - login view  apps/target-server/src/routes/login.routes.js file
+
+          ```javascript
+            import {
+              ....
+              processLogOut,
+            } from '../controllers/login.controllers.js';
+            ....
+            router.get('/login/logout', processLogOut);
+            ....
+          ```
+      
+      - How this attack occurs
+        - targer-server
+          - Run targer-server: [targer-server](http://localhost:3333/home)
+          - Login into targer-server
+        - attack-server
+          - Run targer-server: [attack-server](http://localhost:5555)
+          - This is going to automaticaly call form post and change your password.
+        - targer-server
+          - Login into targer-server
+          - Invalid credentials message.

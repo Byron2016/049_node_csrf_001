@@ -1,0 +1,17 @@
+<h1>
+  Bienvenido
+</h1>
+
+<div>
+  {{#if logout}}
+    <form action='/login/logout' method='get'>
+      <input type='submit' value='Log out' />
+    </form>
+  {{/if}}
+
+  {{#if login}}
+    <form action='/login' method='get'>
+      <input type='submit' value='Log in' />
+    </form>
+  {{/if}}
+</div>
