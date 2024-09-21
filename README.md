@@ -619,6 +619,7 @@ We are going to use
         # cd apps/target-server 
         npm pkg set scripts.dev="serve -l 5555 ./src/index.html"
         npm pkg set scripts.dev:a="serve -l 5555 ./src/index_01.html"
+        npm pkg set scripts.dev:b="serve -l 5555 ./src/index_02.html"
       ```
 
   
@@ -847,3 +848,89 @@ We are going to use
             - Credentials are send to target-server
             - cors error are not showed. 
             - email is updated 
+
+- CSRF Tokens
+
+  - Target-server 
+    
+    - Initial steps **apps/targer-server/**
+
+      - Add prettier dev dependency
+
+        ```bash
+          # apps/targer-server/
+          pnpm i uuid
+        ```
+
+    - Add tokens  
+
+      - Add **apps/targer-server/src/forTokens.js** file
+
+        ```javascript
+          // CSRF
+          import { v4 as uuidv4 } from 'uuid';
+          
+          export const tokens = new Map();
+          
+          export const csrfToken = (sessionId) => {
+            const token = uuidv4();
+            tokens.get(sessionId).add(token);
+            //const now = new Date().getTime(); //1.01.35
+            setTimeout(() => {
+              tokens.get(sessionId).delete(token);
+              console.log('csrfToken-Token-Eliminado', tokens);
+            }, 30000);
+            console.log('csrfToken-Token-Agregado', tokens);
+            return token;
+          };
+          
+          export const crsf = (req, res, next) => {
+            const token = req.body.csrf;
+            console.log('crsf-token', token);
+            console.log('crsf-tokens', tokens);
+            if (!token || !tokens.get(req.sessionID).has(token)) {
+              res.status(422).send('CSRF Token missing or expired');
+            } else {
+              next();
+            }
+          };
+        ```
+
+      - Update **apps/targer-server/src/routes/login.routes.js** file
+
+        ```javascript
+          import { login } from '../middleware/login.middleware.js';
+          import { crsf } from '../forTokens.js';
+          ....
+          router.post('/login/edit', login, crsf, processLoginEditForm);
+        ```
+
+      - Update **apps/targer-server/src/controllers/login.controllers.js** file
+
+        ```javascript
+          import { csrfToken, tokens } from '../forTokens.js';
+          ....
+          export const processLoginForm = (req, res) => {
+            ....
+            req.session.userId = user.id;
+            // CSRF tokens
+            tokens.set(req.sessionID, new Set());
+            // console.log('login-post-processLoginForm', tokens);
+            ....
+          };
+          ....
+          export const loginEditForm = (req, res) => {
+            const newToken = csrfToken(req.sessionID);
+            res.render('edit', { token: newToken });
+          };
+        ```
+
+      - Update **apps/targer-server/src/views/edit.hbs** file
+
+        ```html
+          <form action='/login/edit' method='post'>
+            ....
+            <input type='hidden' name='csrf' value='{{token}}' />
+            ....
+          </form>
+        ```

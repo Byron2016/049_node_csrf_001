@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { csrfToken, tokens } from '../forTokens.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -22,6 +23,11 @@ export const processLoginForm = (req, res) => {
   }
   req.session.test = 'hola';
   req.session.userId = user.id;
+
+  //CSRF tokens
+  tokens.set(req.sessionID, new Set());
+  //console.log('login-post-processLoginForm', tokens);
+
   console.log(req.session);
   res.redirect('/home');
 };
@@ -33,11 +39,13 @@ export const processLogOut = (req, res) => {
 };
 
 export const loginEditForm = (req, res) => {
-  res.render('edit');
+  const newToken = csrfToken(req.sessionID);
+  res.render('edit', { token: newToken });
 };
 
 export const processLoginEditForm = (req, res) => {
   console.log(`----> Inside of  processLoginEditForm ${req.body}`);
+  console.log(req.get('origin'));
   const user = users.find((user) => user.id === req.session.userId);
   user.email = req.body.email;
   console.log(`User ${user.id} email changed to ${user.email}`);
