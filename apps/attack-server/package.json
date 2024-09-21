@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "serve -l 5555 ./src/index.html"
+    "dev": "serve -l 5555 ./src/index.html",
+    "dev:a": "serve -l 5555 ./src/index_01.html"
   },
   "keywords": [],
   "author": "",

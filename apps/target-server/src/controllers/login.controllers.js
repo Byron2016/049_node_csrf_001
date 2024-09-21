@@ -37,6 +37,7 @@ export const loginEditForm = (req, res) => {
 };
 
 export const processLoginEditForm = (req, res) => {
+  console.log(`----> Inside of  processLoginEditForm ${req.body}`);
   const user = users.find((user) => user.id === req.session.userId);
   user.email = req.body.email;
   console.log(`User ${user.id} email changed to ${user.email}`);
