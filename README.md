@@ -748,7 +748,7 @@ We are going to use
   
   - Second attack form
 
-    - Create an apps/attack-server/src/index.html file
+    - Create an apps/attack-server/src/index_01.html file
 
       ```html
         <!DOCTYPE html>
@@ -788,3 +788,31 @@ We are going to use
             - Access to fetch at **'http://localhost:3333/login/edit'** from origin **'http://localhost:5555'** has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
               - This disable target server to send message about email changed.
               - We had not sent credential
+
+      - Try 02: 
+
+        - Update apps/attack-server/src/index_01.html file
+
+          ```html
+            ....
+              <script>
+                fetch("http://localhost:3333/login/edit", {
+                  method: "POST",
+                  credentials: "include",
+                  body: {
+                    email: "HACKED_sinqueteenteres@test.com"
+                  }
+                })
+                  ....
+              </script>
+          ```
+
+        - Try 02: How this attack occurs
+          - targer-server
+            - Run targer-server: [targer-server](http://localhost:3333/home)
+            - Login into targer-server
+          - attack-server
+            - Run targer-server: [attack-server](http://localhost:5555)
+            - Credentials are send to target-server
+            - email is updated like **undefined**
+              - This is because target-server does not expect a json it expect a form.

