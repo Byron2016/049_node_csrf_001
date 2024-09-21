@@ -934,3 +934,39 @@ We are going to use
             ....
           </form>
         ```
+  - Attack-server 
+
+    - First attack form
+
+      - Create an apps/attack-server/src/index_02.html file
+
+        ```html
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Attacker WebSite</title>
+            </head>
+            <body>
+              <div>
+                <h1>Some nice website 2</h1>
+                <form name="form" action="http://localhost:3333/login/edit" method="post">
+                  <input type="hidden" name="email" value="HACKED@test.com" />
+                </form>
+              </div>
+              <script>
+                document.form.submit();
+              </script>
+            </body>
+          </html>
+        ```
+      - How this attack occurs
+          - targer-server
+            - Run targer-server: [targer-server](http://localhost:3333/home)
+            - Login into targer-server
+          - attack-server
+            - Run targer-server: [attack-server](http://localhost:5555)
+            - This is going to automaticaly call form post 
+            - It is going to generate a error: CSRF Token missing or expired because we are not sending any token.
+
