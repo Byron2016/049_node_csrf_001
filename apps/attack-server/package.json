@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "serve -l 5555 ./src/index.html",
     "dev:a": "serve -l 5555 ./src/index_01.html",
-    "dev:b": "serve -l 5555 ./src/index_02.html"
+    "dev:b": "serve -l 5555 ./src/index_02.html",
+    "dev:c": "serve -l 5555 ./src/index_03.html"
   },
   "keywords": [],
   "author": "",

