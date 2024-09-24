@@ -8,6 +8,8 @@ import handlebars from 'express-handlebars';
 import indexRoutes from './routes/index.routes.js';
 import loginRoutes from './routes/login.routes.js';
 
+import cors from 'cors';
+
 // Initializations
 const app = express();
 const PORT = process.env.PORT || 3333;
@@ -28,6 +30,7 @@ app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 
 // Middlewares
+app.use(cors());
 app.use(express.urlencoded({ extended: true })); // mirar T_express.md
 app.use(
   session({

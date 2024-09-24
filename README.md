@@ -1000,12 +1000,47 @@ We are going to use
           </html>
         ```
       - How this attack occurs
-          - targer-server
-            - Run targer-server: [targer-server](http://localhost:3333/home)
-            - Login into targer-server
-          - attack-server
-            - Run targer-server: [attack-server](http://localhost:5555)
-              - target-server is going to print in console a new token.
-              - attack-server is going to console a error.
+        - targer-server
+          - Run targer-server: [targer-server](http://localhost:3333/home)
+          - Login into targer-server
+        - attack-server
+          - Run targer-server: [attack-server](http://localhost:5555)
+            - target-server is going to print in console a new token.
+            - attack-server is going to console a error.
                 - Access to fetch at **'http://localhost:3333/login/edit'** from origin **'http://localhost:5555'** has been blocked by **CORS policy**
                 - (1.05.56) Se descarga un código del atacante, pero este código tiene peticiones que hace a otro servidor, la petición es procesada (no hay ningún problema) el navegador no te permite ver la respuesta por temas de seguridad, es decir para que se pueda ver la respuesta, el servidor **target** debe enviar en sus cabeceras un **Access-Control-Allow-Origin** permitiéndote explícitamente ver esa respuesta.
+
+
+    - Third attack form (1.06.38)
+
+      - Add cors to target-server
+      
+        ```bash
+          # ./apps/target-server/
+          pnpm i cors
+        ```
+      
+      - Use cors in target-server
+
+        ```javascript
+          ....
+          import cors from 'cors';
+          ....
+          // Middlewares
+          app.use(cors());
+          ....
+        ```
+
+      - Create a file "apps/attack-server/src/index_04.html" igual to "apps/attack-server/src/index_03.html" file
+      
+      - How this attack occurs (1.08.41)
+        - targer-server
+          - Run targer-server: [targer-server](http://localhost:3333/home)
+          - Login into targer-server
+        - attack-server
+          - Run targer-server: [attack-server](http://localhost:5555)
+            - target-server is going to print in console a new token.
+            - attack-server is going to console a error.
+                - Access to fetch at **'http://localhost:3333/login/edit'** from origin **'http://localhost:5555'** has been blocked by **CORS policy** : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+                - In Network/Headers/Response Headers we are going to have a header "Access-Control-Allow-Origin: *" the browser is going to allow you to see answers only if you don´t send <code>{ credentials: "include" }</code>(1.09.04) 
+
