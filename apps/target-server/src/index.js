@@ -8,7 +8,8 @@ import handlebars from 'express-handlebars';
 import indexRoutes from './routes/index.routes.js';
 import loginRoutes from './routes/login.routes.js';
 
-import cors from 'cors';
+// import cors from 'cors';
+import flash from 'connect-flash-plus'; // En la sessión metio un mensaje o lo que sea, esto sirve solo para una petición, la próxima ya no existe.
 
 // Initializations
 const app = express();
@@ -30,12 +31,12 @@ app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 
 // Middlewares
-app.use(
-  cors({
-    origin: 'http://localhost:5555',
-    credentials: true,
-  }),
-);
+// app.use(
+//   cors({
+//     origin: 'http://localhost:5555',
+//     credentials: true,
+//   }),
+// );
 app.use(express.urlencoded({ extended: true })); // mirar T_express.md
 app.use(
   session({
@@ -44,6 +45,8 @@ app.use(
     saveUninitialized: false,
   }),
 );
+
+app.use(flash());
 
 // Db
 // const users = JSON.parse(fs.readFileSync(join(__dirname, 'db.json')));

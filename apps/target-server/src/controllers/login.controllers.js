@@ -10,16 +10,24 @@ const users = JSON.parse(fs.readFileSync(join(__dirname, '..', 'db.json')));
 console.log(users);
 
 export const renderLoginForm = (req, res) => {
-  res.render('login');
+  //res.render('login');
+  console.log('En renderLoginForm');
+  console.log('req.session-->: ', req.session);
+  //res.render('login', { message: req.flash('mesage') });
+  res.render('login', { message: req.flash('message') });
 };
 
 export const processLoginForm = (req, res) => {
   if (!req.body.email || !req.body.password) {
-    return res.status(400).send('All fields are requiered');
+    //return res.status(400).send('All fields are requiered');
+    req.flash('message', 'All fields are requiered');
+    return res.redirect('/login');
   }
   const user = users.find((user) => user.email === req.body.email);
   if (!user || user.password !== req.body.password) {
-    return res.status(400).send('Invalid Credentials');
+    //return res.status(400).send('Invalid Credentials');
+    req.flash('message', 'Invalid Credentials');
+    return res.redirect('/login');
   }
   req.session.test = 'hola';
   req.session.userId = user.id;

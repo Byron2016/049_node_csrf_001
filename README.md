@@ -1090,3 +1090,70 @@ We are going to use
               ```
 
                 - Now we have **access a token inside hidden input** 
+
+- **connect-flash-plus** 
+
+  - Target-server 
+
+    - Add **connect-flash-plus** dev dependency
+
+      ```bash
+        # apps/targer-server/
+        pnpm i connect-flash-plus
+      ```
+    - Update main view 
+
+      ```html
+        ....
+          <body>
+            <div style='color: red'>
+              {{message}}
+            </div>
+            {{{body}}}
+          </body>
+        </html>
+      ```
+    - Import and use **connect-flash-plus** 
+
+      ```javascript
+        ....
+        import flash from 'connect-flash-plus'; // En la sessión metio un mensaje o lo que sea, esto sirve solo para una petición, la próxima ya no existe.
+        app.use(
+          session({
+            secret: 'test',
+            resave: false,
+            saveUninitialized: false,
+          }),
+        );
+
+        app.use(flash()); //<--luego de session
+      ```
+    - Update  **login.controllers.js** 
+
+      ```javascript
+        ....
+        export const renderLoginForm = (req, res) => {
+          console.log('req.session-->: ', req.session); // +
+          //res.render('login', { message: req.flash('mesage') }); // -
+          res.render('login', { message: req.flash('message') });  // +
+        };
+        ....
+        export const processLoginForm = (req, res) => {
+          if (!req.body.email || !req.body.password) {
+            //return res.status(400).send('All fields are requiered');
+            req.flash('message', 'All fields are requiered'); // +
+            return res.redirect('/login'); // +
+          }
+          const user = users.find((user) => user.email === req.body.email);
+          if (!user || user.password !== req.body.password) {
+            //return res.status(400).send('Invalid Credentials'); // -
+            req.flash('message', 'Invalid Credentials'); // +
+            return res.redirect('/login'); // +
+          }
+          ....
+        }
+        ....
+      ```
+
+- Note 
+  - already exist packages that do the things that we lear here about **csrf tokens**
