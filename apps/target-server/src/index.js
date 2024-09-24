@@ -30,7 +30,12 @@ app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5555',
+    credentials: true,
+  }),
+);
 app.use(express.urlencoded({ extended: true })); // mirar T_express.md
 app.use(
   session({

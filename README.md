@@ -1044,3 +1044,49 @@ We are going to use
                 - Access to fetch at **'http://localhost:3333/login/edit'** from origin **'http://localhost:5555'** has been blocked by **CORS policy** : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
                 - In Network/Headers/Response Headers we are going to have a header "Access-Control-Allow-Origin: *" the browser is going to allow you to see answers only if you don´t send <code>{ credentials: "include" }</code>(1.09.04) 
 
+      - Update  "apps/target-server/src/index.js" 
+  
+        ```javascript
+          ....
+          // Middlewares
+          app.use(
+            cors({
+              origin: 'http://localhost:5555',
+              credentials: true,
+            }),
+          );
+          ....
+        ```
+
+      - How this attack occurs (1.11.00)
+        - targer-server
+          - Run targer-server: [targer-server](http://localhost:3333/home)
+          - Login into targer-server
+        - attack-server
+          - Run targer-server: [attack-server](http://localhost:5555)
+            - target-server is going to print in console a new token.
+            - attack-server is going to show an html response on console.
+                
+              ```html
+                <html lang='en'>
+                  <head>
+                    <meta charset='UTF-8' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <title>CSRF</title>
+                  </head>
+                  <body>
+                    <form action='/login/edit' method='post'>
+                  <input
+                    type='email'
+                    name='email'
+                    placeholder='New Email'
+                    value='testNew@test.com'
+                  />
+                  <input type='hidden' name='csrf' value='af5f85af-ef17-4a82-8658-c7cc4bb046b7' />
+                  <input type='submit' />
+                </form>
+                  </body>
+                </html>
+              ```
+
+                - Now we have **access a token inside hidden input** 
